@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Incident {
+  id              Int      @id @default(autoincrement())
+  type            String   // 'Theft', 'Violence', 'Crowd', 'Fire', etc.
+  description     String?
+  latitude        Float
+  longitude       Float
+  confidence      Float    // 0.0 to 1.0
+  timestamp       DateTime @default(now())
+  status          String   @default("pending") // 'pending', 'verified', 'resolved'
+  severity        String   @default("medium") // 'low', 'medium', 'high', 'critical'
+  camera_id       String?
+  video_url       String?  // URL to video evidence
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+opencv-python
+numpy
+ultralytics
+pydantic
+requests
+python-socketio
+SpeechRecognition
+pydub
+pyaudio
+

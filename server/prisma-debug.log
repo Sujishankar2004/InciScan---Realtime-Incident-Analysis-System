@@ -1,0 +1,15 @@
+STDOUT:
+
+✔ Generated Prisma Client (v7.3.0) to .\node_modules\@prisma\client in 81ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+
+
+
+STDERR:
+Prisma schema loaded from prisma\schema.prisma.
+
+
+ERROR:
+None
