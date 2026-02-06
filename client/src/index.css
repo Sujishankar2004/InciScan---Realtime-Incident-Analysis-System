@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles for dark theme */
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #111827;
+    /* gray-900 */
+    color: white;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Ensure Leaflet map renders properly */
+.leaflet-container {
+    height: 100%;
+    width: 100%;
+    background: #1f2937;
+}
