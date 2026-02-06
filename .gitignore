@@ -2,10 +2,12 @@
 node_modules/
 *.pyc
 __pycache__/
-
+server/package-lock.json
+package-lock.json
 # Environment files
 .env
 .env.local
+
 
 # ML Service - Large files
 ml_service/uploads/
