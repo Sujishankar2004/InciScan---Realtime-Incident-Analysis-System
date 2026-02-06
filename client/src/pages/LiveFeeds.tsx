@@ -182,10 +182,28 @@ const LiveFeeds = () => {
                                 )}
                             </div>
 
+                            {/* Video Preview */}
                             {analysisResult.output_video && (
+                                <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+                                    <h3 className="text-lg font-semibold text-white mb-3">Analyzed Video Preview</h3>
+                                    <video
+                                        src={`http://localhost:8000${analysisResult.output_video}`}
+                                        controls
+                                        className="w-full rounded-lg"
+                                        style={{ maxHeight: '400px' }}
+                                    >
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <p className="text-sm text-gray-400 mt-2">
+                                        Preview the analyzed video with bounding boxes and detection labels.
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Download Button */}
+                            {analysisResult.download_url && (
                                 <a
-                                    href={`http://localhost:8000${analysisResult.output_video}`}
-                                    download
+                                    href={`http://localhost:8000${analysisResult.download_url}`}
                                     className="flex items-center justify-center space-x-2 w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
                                 >
                                     <Download className="w-4 h-4" />
