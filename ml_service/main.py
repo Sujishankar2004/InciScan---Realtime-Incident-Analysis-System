@@ -143,10 +143,28 @@ async def analyze_video(video: UploadFile = File(...)):
         
         # Add output video URL
         result['output_video'] = f"/outputs/{output_filename}"
+        result['download_url'] = f"/download/{output_filename}"
         
         return result
     except Exception as e:
         return {"error": str(e), "detections": [], "total_frames": 0}
+
+@app.get("/download/{filename}")
+async def download_video(filename: str):
+    """
+    Download a processed video file with proper headers.
+    Sets Content-Disposition to force download in browsers.
+    """
+    file_path = OUTPUT_DIR / filename
+    if not file_path.exists():
+        return {"error": "File not found"}
+    
+    return FileResponse(
+        path=str(file_path),
+        filename=filename,
+        media_type='video/mp4',
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -1,12 +1,42 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { AlertTriangle, Home, BarChart2, Video, Settings, ShieldAlert } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { AlertTriangle, Home, BarChart2, Video, Settings, ShieldAlert, LogOut, ChevronDown, User } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import ReportIncidentModal from './ReportIncidentModal';
 
 interface LayoutProps {
     children: React.ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+    const { user, signOut } = useAuth();
+    const navigate = useNavigate();
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [showReportModal, setShowReportModal] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    const handleLogout = async () => {
+        await signOut();
+        navigate('/login');
+    };
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setShowDropdown(false);
+            }
+        };
+
+        if (showDropdown) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showDropdown]);
+
     return (
         <div className="flex h-screen bg-gray-900 text-white font-sans">
             {/* Sidebar */}
@@ -38,11 +68,43 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <header className="bg-gray-800/50 backdrop-blur-md border-b border-gray-700 p-4 flex justify-between items-center sticky top-0 z-10">
                     <h1 className="text-xl font-semibold text-gray-100">Operation Center</h1>
                     <div className="flex items-center space-x-4">
-                        <button className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium transition-colors">
+                        <button
+                            onClick={() => setShowReportModal(true)}
+                            className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium transition-colors"
+                        >
                             Report Incident
                         </button>
-                        <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
-                            <span className="font-bold">AD</span>
+
+                        {/* User Dropdown */}
+                        <div className="relative" ref={dropdownRef}>
+                            <button
+                                onClick={() => setShowDropdown(!showDropdown)}
+                                className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                            >
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
+                                    <User className="w-4 h-4" />
+                                </div>
+                                <ChevronDown className="w-4 h-4 text-gray-400" />
+                            </button>
+
+                            {/* Dropdown Menu */}
+                            {showDropdown && (
+                                <div className="absolute right-0 mt-2 w-56 bg-gray-800 border border-gray-700 rounded-lg shadow-xl overflow-hidden">
+                                    <div className="px-4 py-3 border-b border-gray-700">
+                                        <p className="text-xs text-gray-400">Signed in as</p>
+                                        <p className="text-sm text-white font-medium truncate mt-1">
+                                            {user?.email || 'User'}
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full flex items-center space-x-2 px-4 py-3 text-left text-gray-300 hover:bg-gray-700 transition-colors"
+                                    >
+                                        <LogOut className="w-4 h-4" />
+                                        <span>Logout</span>
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </header>
@@ -50,6 +112,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <div className="p-6">
                     {children}
                 </div>
+
+                {/* Report Incident Modal */}
+                <ReportIncidentModal
+                    isOpen={showReportModal}
+                    onClose={() => setShowReportModal(false)}
+                />
             </main>
         </div>
     );
